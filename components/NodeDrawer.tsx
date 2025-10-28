@@ -156,11 +156,9 @@ export function NodeDrawer({ open, node, isCompleted, onClose, onToggleComplete 
             {isCompleted ? "Mark as incomplete" : "Mark complete"}
           </Button>
           {isCompleted ? (
-            <p className="text-xs text-emerald-700">Progress saved for this session.</p>
+            <p className="text-xs text-emerald-700">Progress saved to this browser.</p>
           ) : (
-            <p className="text-xs text-muted-foreground">
-              Marking complete only lasts until you refresh this page.
-            </p>
+            <p className="text-xs text-muted-foreground">Checked steps stick around even after a refresh.</p>
           )}
         </div>
       </aside>
