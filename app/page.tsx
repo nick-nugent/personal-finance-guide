@@ -16,8 +16,8 @@ export default function HomePage() {
           Build a clear roadmap for your financial goals. Start exploring the
           interactive flowchart soon to understand every step of your journey.
         </p>
-        <Button asChild className="mt-4" aria-label="Go to Flowchart (coming soon)">
-          <Link href="/flowchart">Go to Flowchart (coming soon)</Link>
+        <Button asChild className="mt-4" aria-label="Go to Flowchart">
+          <Link href="/flowchart">Go to Flowchart</Link>
         </Button>
       </div>
     </main>
