@@ -9,10 +9,15 @@ test.describe("homepage", () => {
       })
     ).toBeVisible();
     const flowchartLink = page.getByRole("link", {
-      name: "Go to Flowchart (coming soon)"
+      name: "Go to Flowchart"
     });
     await expect(flowchartLink).toBeVisible();
     await flowchartLink.click();
-    await expect(page.getByText("This page could not be found.")).toBeVisible();
+    await expect(page).toHaveURL(/\/flowchart$/);
+    await expect(
+      page.getByRole("heading", {
+        name: "Plan your next move in the personal finance priority order"
+      })
+    ).toBeVisible();
   });
 });
