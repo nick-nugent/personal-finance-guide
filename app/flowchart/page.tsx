@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-import { Flowchart } from "@/components/Flowchart";
+import { FlowchartTabsSection } from "./FlowchartTabs";
 
 export const metadata: Metadata = {
   title: "Personal Finance Flowchart",
@@ -22,9 +22,7 @@ export default function FlowchartPage() {
         </p>
       </div>
       <div className="mx-auto w-full max-w-6xl flex-1">
-        <div className="h-full min-h-[600px] rounded-xl border border-border bg-background shadow-sm">
-          <Flowchart />
-        </div>
+        <FlowchartTabsSection />
       </div>
     </main>
   );

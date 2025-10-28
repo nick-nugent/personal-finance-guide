@@ -5,6 +5,9 @@ import ReactFlow, { Background, Controls, Edge, Node, NodeProps, ReactFlowInstan
 import "reactflow/dist/style.css";
 
 import { flowchartEdges, flowchartNodes } from "@/data/flowchart";
+import { Button } from "@/components/ui/button";
+import { useProgress } from "@/hooks/useProgress";
+import { NODE_SECTION_MAP, TabId } from "@/lib/sections";
 
 import { NodeDrawer } from "./NodeDrawer";
 
@@ -46,12 +49,20 @@ const nodeTypes = {
   }
 };
 
-export function Flowchart() {
+type FlowchartProps = {
+  onSectionNavigate?: (sectionId: TabId) => void;
+};
+
+export function Flowchart({ onSectionNavigate }: FlowchartProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [completedNodes, setCompletedNodes] = useState<Record<string, boolean>>({});
   const lastFocusedNodeId = useRef<string | null>(null);
   const wasDrawerOpen = useRef(false);
   const flowInstanceRef = useRef<ReactFlowInstance | null>(null);
+  const { progress, completedIds, toggleCompleted, resetProgress, isCompleted } = useProgress();
+
+  const totalSteps = flowchartNodes.length;
+  const completedCount = completedIds.length;
+  const progressRatio = totalSteps === 0 ? 0 : completedCount / totalSteps;
 
   const nodes: Node<FinanceNodeData>[] = useMemo(
     () =>
@@ -62,15 +73,19 @@ export function Flowchart() {
           id: node.id,
           title: node.title,
           summary: node.summary,
-          isCompleted: Boolean(completedNodes[node.id]),
+          isCompleted: Boolean(progress[node.id]),
           onSelect: (id: string) => {
             lastFocusedNodeId.current = id;
             setSelectedNodeId(id);
+            const sectionId = NODE_SECTION_MAP[id];
+            if (sectionId) {
+              onSectionNavigate?.(sectionId);
+            }
           }
         },
         type: "finance"
       })),
-    [completedNodes]
+    [onSectionNavigate, progress]
   );
 
   const edges: Edge[] = useMemo(
@@ -115,15 +130,38 @@ export function Flowchart() {
     setSelectedNodeId(null);
   }, []);
 
-  const handleToggleComplete = useCallback((id: string) => {
-    setCompletedNodes((prev) => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  }, []);
+  const handleResetProgress = useCallback(() => {
+    resetProgress();
+  }, [resetProgress]);
 
   return (
     <div className="relative h-full min-h-[600px] w-full">
+      <div className="pointer-events-none absolute left-4 right-4 top-4 z-20 flex justify-start">
+        <div className="pointer-events-auto flex w-full max-w-sm flex-col gap-3 rounded-lg border border-border bg-background/95 p-4 shadow-sm backdrop-blur">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-semibold text-foreground">Progress</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              {completedCount} of {totalSteps} steps complete
+            </span>
+          </div>
+          <div
+            className="h-2 w-full rounded-full bg-muted"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={totalSteps}
+            aria-valuenow={completedCount}
+          >
+            <div
+              className="h-full rounded-full bg-primary transition-all duration-300"
+              style={{ width: `${Math.round(progressRatio * 100)}%` }}
+              aria-hidden="true"
+            />
+          </div>
+          <Button type="button" variant="outline" size="sm" onClick={handleResetProgress}>
+            Reset Progress
+          </Button>
+        </div>
+      </div>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -138,11 +176,11 @@ export function Flowchart() {
       <NodeDrawer
         open={drawerOpen}
         node={selectedNode}
-        isCompleted={selectedNode ? Boolean(completedNodes[selectedNode.id]) : false}
+        isCompleted={selectedNode ? isCompleted(selectedNode.id) : false}
         onClose={handleCloseDrawer}
         onToggleComplete={
           selectedNode
-            ? () => handleToggleComplete(selectedNode.id)
+            ? () => toggleCompleted(selectedNode.id)
             : () => {
                 /* no-op */
               }
