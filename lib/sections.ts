@@ -12,6 +12,7 @@ export type SectionTab = {
   label: string;
   anchor: string;
   blurb: string;
+  topicSlug?: string;
 };
 
 export const SECTION_TABS: SectionTab[] = [
@@ -20,20 +21,23 @@ export const SECTION_TABS: SectionTab[] = [
     label: "Budgeting",
     anchor: "budgeting",
     blurb:
-      "Dial in cash flow, track expenses, and build a plan so every dollar has a job before it leaves your account."
+      "Dial in cash flow, track expenses, and build a plan so every dollar has a job before it leaves your account.",
+    topicSlug: "start-here"
   },
   {
     id: "debt",
     label: "Debt",
     anchor: "debt",
-    blurb: "Prioritize high-interest balances and choose payoff tactics to stay motivated without sacrificing essentials."
+    blurb: "Prioritize high-interest balances and choose payoff tactics to stay motivated without sacrificing essentials.",
+    topicSlug: "debt-basics"
   },
   {
     id: "investing",
     label: "Investing",
     anchor: "investing",
     blurb:
-      "Automate contributions, capture employer matches, and lean on diversified, low-cost index funds for long-term growth."
+      "Automate contributions, capture employer matches, and lean on diversified, low-cost index funds for long-term growth.",
+    topicSlug: "investing-basics"
   },
   {
     id: "safety-net",
@@ -72,4 +76,3 @@ export const NODE_SECTION_MAP: Record<string, TabId> = {
   hsa: "tools",
   taxable: "glossary"
 };
-
