@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 import { Flowchart } from "@/components/Flowchart";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SECTION_TABS, TabId } from "@/lib/sections";
 
@@ -97,18 +99,34 @@ export function FlowchartTabsSection() {
                   <h2 className="text-2xl font-semibold tracking-tight">{tab.label}</h2>
                   <p className="text-sm text-muted-foreground">{tab.blurb}</p>
                 </header>
-                <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                  <p>
-                    Use this space to expand on <strong className="text-foreground">{tab.label.toLowerCase()}</strong>{" "}
-                    guidance. Future updates will add deep dives, checklists, and contextual tools to move from the
-                    high-level roadmap into day-to-day actions.
-                  </p>
-                  <p>
-                    For now, capture the questions you want answered, resources you rely on, and decisions you still need
-                    to make. When detailed MDX content arrives, the section will walk through practical steps tailored to
-                    each milestone on the flowchart.
-                  </p>
-                </div>
+                {tab.topicSlug ? (
+                  <div className="flex flex-col justify-between gap-3 rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4 sm:flex-row sm:items-center">
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        Deep dive available
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Explore the {tab.label.toLowerCase()} guide for step-by-step checklists and context.
+                      </p>
+                    </div>
+                    <Button asChild variant="default">
+                      <Link href={`/${tab.topicSlug}`}>Read the guide</Link>
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+                    <p>
+                      Use this space to expand on <strong className="text-foreground">{tab.label.toLowerCase()}</strong>{" "}
+                      guidance. Future updates will add deep dives, checklists, and contextual tools to move from the
+                      high-level roadmap into day-to-day actions.
+                    </p>
+                    <p>
+                      For now, capture the questions you want answered, resources you rely on, and decisions you still
+                      need to make. When detailed MDX content arrives, the section will walk through practical steps
+                      tailored to each milestone on the flowchart.
+                    </p>
+                  </div>
+                )}
               </section>
             </TabsContent>
           ))}
